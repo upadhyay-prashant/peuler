@@ -1,0 +1,60 @@
+#include<iostream>
+using namespace std;
+class Graph{
+    std::vector<int> nodes[7];
+    std::map<int,int> numToDigitsMap;
+    std::map<int,int> numToIndMap;//assumption that each number will be filled in once. 
+    Graph(){
+    }
+    void init(){
+        int a[]={17,13,11,7,5,3,2};
+        for(int j=0;j<7;j++){
+            for(int i=17;i<1000;i=i+17){
+                make_entry(j,i);
+            }
+        }
+    }
+    void make_entry(int j,int i){
+        if(j==0){
+            int size=nodes[j].size();
+            int loc=i/10;
+            nodes[j].push_back(i);
+            numToIndMap[i]=size;
+            int dig=0;
+            for(int k=0;k<3 && dig!=-1;k++){
+                int ind=i%10;
+                if(dig&(1<<ind))
+                    dig=-1;
+                dig=dig|(1<<ind);
+                i=i/10;
+            }
+            numToDigitsMap[loc]=dig;
+        }
+        else{
+            int parent=-1;
+            std::map<int,int>::iterator it=numToDigitsMap.find(i%100);
+            if(it==numToDigitsMap.end())
+                return;
+            parent=it->second;
+            if(parent==-1)
+                return;
+            int size=nodes[j].size();
+            nodes[j].push_back(i);
+            numToIndMap[i]=size;
+            for(k=0;k<3 && parent!=-1; k++){
+                int ind=i%10;
+                if(parent&(1<<ind))
+                    parent=-1;
+                parent=parent|(1<<ind);
+                i=i/10;
+            }
+
+        }
+    }
+
+
+
+}
+int main(){
+    return 0;
+}
